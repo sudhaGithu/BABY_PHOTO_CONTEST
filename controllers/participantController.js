@@ -70,15 +70,35 @@ const ParticipantController = {
             if (state) {
                 query.state = state;
             }
+            else{
+                res.status(200).json(
+                    {
+                        message:"there is no participants based on given fields"
+                    }
+                )
+            }
     
             // Check if district filter is provided
             if (district) {
                 query.district = district;
+            }else{
+                res.status(200).json(
+                    {
+                        message:"there is no participants based on given fields"
+                    }
+                )
             }
     
             const participants = await Participant.find(query);
-    
+            console.log(participants);
+            if (participants.length === 0) {
+                return res.status(404).json({ message: 'Participants not found', participants: undefined });
+            }
+            else
+            {
             res.status(200).json(participants);
+            }
+            
         } catch (error) {
             console.error('Error fetching participants:', error);
             res.status(500).json({ error: 'Server error' });
@@ -178,7 +198,7 @@ const ParticipantController = {
     voteForParticipant: async (req, res) => {
         try {
             const { babyCode, voterId } = req.body;
-            const participant = await Participant.findOne({ babyCode }); // assuming the voter ID is passed in the request body
+            const participant = await Participant.findOne({ babyCode:babyCode }); // assuming the voter ID is passed in the request body
 
             if (!participant) {
                 return res.status(404).json({ error: 'Participant not found' });
@@ -205,20 +225,51 @@ const ParticipantController = {
 
     unvoteForParticipant: async (req, res) => {
         try {
-            const { babyCode } = req.body;
+            const { babyCode, voterId } = req.body;
             const participant = await Participant.findOne({ babyCode });
             if (!participant) {
                 return res.status(404).json({ error: 'Participant not found' });
             }
 
-            // Decrement the votes only if the votes are greater than 0
-            if (participant.votes > 0) {
-                participant.votes -= 1;
-                await participant.save();
+            // Check if the voter with given voterId exists in the participant's voters array
+        const voterIndex = participant.voters.findIndex(v => v.voterId === voterId);
+
+        // if (voterIndex !== -1) {
+        //     // Decrease the votes count
+        //     participant.votes -= 1;
+
+        //     // Remove the voter from the voters array
+        //     participant.voters.splice(voterIndex, 1);
+
+        //     // Save the updated participant
+        //     await participant.save();
+
+        //     // Optionally, update Parent document if needed
+        //     // const parent = await Parent.findByIdAndUpdate(parentId, {
+        //     //     $pull: { voters: { voterId: voterId } }
+        //     // }, { new: true });
+
+        //     // Respond with success message and updated participant data
+        //     res.status(200).json({ message: 'Unvote counted successfully', participant });
+        // }
+
+            
+        if (voterIndex !== -1) {
+            // Decrease the votes count
+            participant.votes -= 1;
+
+            // Remove the voter from the voters array
+            participant.voters.splice(voterIndex, 1);
+
+            // Save the updated participant
+            await participant.save();
                 res.status(200).json({ message: 'Unvote counted successfully', participant });
             } else {
-                res.status(400).json({ error: 'No votes to remove' });
+                res.status(400).json({ message: 'you are not voted for this baby to unvote' });
             }
+
+
+
         } catch (error) {
             console.error('Error unvoting:', error);
             res.status(500).json({ error: 'Server error' });

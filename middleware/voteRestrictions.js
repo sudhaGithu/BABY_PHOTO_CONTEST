@@ -4,7 +4,7 @@ const moment = require('moment');
 const voteRestrictions = async (req, res, next) => {
     try {
         const { babyCode, voterId } = req.body;
-        const participant = await Participant.findById(babyCode);
+        const participant = await Participant.findOne({ babyCode : babyCode});
 
         if (!participant) {
             return res.status(404).json({ error: 'Participant not found' });

@@ -1,123 +1,107 @@
-require('dotenv').config();
+// require('dotenv').config();
 const nodemailer = require('nodemailer')
 const otpmodel = require('../models/generateOtp')
+const userSequence = require('../models/userSequenceModel')
 const otpGenertaor = require('otp-generator');
-const twilio = require('twilio');
+//const twilio = require('twilio');
 const jwt = require('jsonwebtoken')
 //console.log(process.env);
 // const accountSid = process.env.TWILIO_ACCOUNT_SID;
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // console.log(accountSid , authToken, process.env.TWILIO_PHONE_NUMBER);
 // const twilioClient = new twilio(accountSid, authToken);
-
+const JWT_SECRET = "my_secret_key"
 const generateOtp = async (req, res) => {
     try {
+        const { email } = req.body;
 
-        const {email} = req.body;
-        let testAccount = await nodemailer.createTestAccount();
+        // to genrate sequence for user 
+        let sequence = await userSequence.findOneAndUpdate(
+            { name: 'generateotps' },
+            { $inc: { value: 1 } },
+            { new: true, upsert: true }
+        );
 
-       
-        // connect with the smtp
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            host:"smtp.gmail.com",
-            port: 587,
-            secure: false, // Use `true` for port 465, `false` for all other ports
-            auth: {
-             user: 'sudarsanarao054@gmail.com',
-             pass: 'norb ryrq uevc vwud'
-            },
-          });
+        if (!sequence) {
+            return res.status(500).json({ error: 'Failed to generate voterId' });
+        }
 
-        const otpDocument = await otpmodel.findOne({email});
+        // Generate the baby code
+        const voterId = `USER${sequence.value}`;
 
-        const otp = otpGenertaor.generate(5,{
+
+        
+        const otpDocument = await otpmodel.findOne({ email });
+        const otp = otpGenertaor.generate(5, {
             upperCaseAlphabets: false,
             lowerCaseAlphabets: false,
             specialChars: false
         });
-
         const cDate = new Date();
-        if(otpDocument)
-            {
-                const updateotp = await otpmodel.findOneAndUpdate(
-                    {email:email},
-                   
-                    {$set:{otp:otp}},
-                    {$set:{otpExpiration: new Date(cDate.getTime())}},
-                   { new: true });
 
-                   const info = await transporter.sendMail({
-                    from: "sudarsanarao054@gmail.com", // sender address
-                    to: email, // list of receivers
-                    subject: "OTP for verification", // Subject line
-                    text: `your OTP for baby contest login is ${otp}`, // plain text body
-                    //html: "<b>Hello world?</b>", // html body
-                  });
+        let info;
+        if (otpDocument) {
+            // Update existing OTP
+            const updateotp = await otpmodel.findOneAndUpdate(
+                { email: email },
+                { $set: { otp: otp, otpExpiration: new Date(cDate.getTime()) } },
+                { new: true }
+            );
+        } else {
+            // Generate new OTP document
+            const generateotp = new otpmodel({
+                email,
+                otp,
+                voterId,
+                otpExpiration: new Date(cDate.getTime())
+            });
+            await generateotp.save();
+        }
 
-                  transporter.sendMail(info, (error, emailResponse)=>{
-                    if(error)
-                    throw error;
-                    res.status(200).json({
-                        success: true,
-                        message: 'Otp sent successfully',
-                        otp: otp
-                
-                     })
-                  })
+        // Send email with OTP
+        info = await sendOtpEmail(email, otp);
 
-                  console.log("message sent: %s", info.messageId);
-
-                //   // console.log(TWILIO_PHONE_NUMBER);
-                //  await twilioClient.messages.create({
-                //  body: `your otp for baby contest login is ${otp}`,
-                // messagingServiceSid:"MG4bc7db30037e55b0dbfd47d48fd0017e",
-                //  to: phone,
-                //  from: process.env.TWILIO_PHONE_NUMBER
-                // })
-
-                  
-            }
-            else
-            {
-                const generateotp = new otpmodel({
-                    email,
-                    otp,
-                    otpExpiration: new Date(cDate.getTime())
-                    
-                })
-                generateotp.save();
-                const info = await transporter.sendMail({
-                    from: "sudarsanarao054@gmail.com", // sender address
-                    to: email, // list of receivers
-                    subject: "OTP for verification", // Subject line
-                    text: `your OTP for baby contest login is ${otp}`, // plain text body
-                    //html: "<b>Hello world?</b>", // html body
-                  });
-
-
-                  transporter.sendMail(info, (error, emailResponse)=>{
-                    if(error)
-                    throw error;
-                    res.status(200).json({
-                        success: true,
-                        message: 'Otp sent successfully',
-                        otp: otp
-                
-                     })
-                  })
-
-            }
+        res.status(200).json({
+            success: true,
+            message: 'OTP sent successfully',
         
-
+        });
     } catch (error) {
-     return res.status(400).json({
-        success: false,
-        message: error.message
-
-     })
+        console.error('Error generating OTP:', error);
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
     }
-  };
+};
+
+async function sendOtpEmail(email, otp) {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // Upgrade later with STARTTLS
+            auth: {
+                user: 'sudarsanarao054@gmail.com', // replace with your actual Gmail email
+                pass: 'norb ryrq uevc vwud' // replace with your actual Gmail password 'norb ryrq uevc vwud'
+            }
+        });
+
+        const info = await transporter.sendMail({
+            from: "sudarsanarao054@gmail.com",
+            to: email,
+            subject: "OTP for verification",
+            text: `Your OTP for baby contest login is ${otp}`
+        });
+
+        console.log("Message sent: %s", info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error;
+    }
+}
 
   const verifyOtp = async (req, res) => {
     try {
@@ -129,9 +113,12 @@ const generateOtp = async (req, res) => {
             {
                     // Generate JWT token
                 const payload = { phone };
-                const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
+                const token = jwt.sign(payload,JWT_SECRET, { expiresIn: '12h' });
                 res.send({success: true ,
-                    user: otpdocument,
+                    user: {
+                        email: otpdocument.email,
+                        voterId: otpdocument.voterId
+                    },
                     token : token
                 });
             }

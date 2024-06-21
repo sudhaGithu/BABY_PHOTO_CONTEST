@@ -13,6 +13,11 @@ const generateOtpSchema = new mongoose.Schema({
     type:Date,
     default:Date.now,
     get:(otpExpiration) => otpExpiration.getTime(),
+  },
+  voterId:
+  {
+    type: String,
+    required: true
   }
 }, {
   timestamps: true
