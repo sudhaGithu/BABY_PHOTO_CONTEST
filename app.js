@@ -1,4 +1,5 @@
 const express = require('express');
+require('dotenv').config()
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const participantRoutes = require('./routes/participantRoutes');
@@ -7,7 +8,7 @@ const otproutes = require('./routes/otpRoute')
 const districtRoutes = require('./routes/districtRoutes');
 const Sequence = require('./models/sequenceModel'); // Ensure this is imported
 
-
+//console.log(process.env.MONGO_URL);
 const app = express();
 const port = 3000;
 
@@ -15,9 +16,9 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
-
+console.log(process.env.MONGO_URL);
 // Connection to database
-mongoose.connect('mongodb://localhost/babyphotocontest', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(async () => {
         console.log('Connected to MongoDB successfully');
 

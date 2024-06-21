@@ -1,4 +1,4 @@
-// require('dotenv').config();
+ require('dotenv').config();
 const nodemailer = require('nodemailer')
 const otpmodel = require('../models/generateOtp')
 const userSequence = require('../models/userSequenceModel')
@@ -10,7 +10,7 @@ const jwt = require('jsonwebtoken')
 // const authToken = process.env.TWILIO_AUTH_TOKEN;
 // console.log(accountSid , authToken, process.env.TWILIO_PHONE_NUMBER);
 // const twilioClient = new twilio(accountSid, authToken);
-const JWT_SECRET = "my_secret_key"
+//const JWT_SECRET = "my_secret_key"
 const generateOtp = async (req, res) => {
     try {
         const { email } = req.body;
@@ -83,13 +83,13 @@ async function sendOtpEmail(email, otp) {
             port: 587,
             secure: false, // Upgrade later with STARTTLS
             auth: {
-                user: 'sudarsanarao054@gmail.com', // replace with your actual Gmail email
-                pass: 'norb ryrq uevc vwud' // replace with your actual Gmail password 'norb ryrq uevc vwud'
+                user: process.env.USER_MAIL, // replace with your actual Gmail email
+                pass: process.env.USER_PASS // replace with your actual Gmail password 'norb ryrq uevc vwud'
             }
         });
 
         const info = await transporter.sendMail({
-            from: "sudarsanarao054@gmail.com",
+            from: process.env.USER_MAIL,
             to: email,
             subject: "OTP for verification",
             text: `Your OTP for baby contest login is ${otp}`
@@ -113,7 +113,7 @@ async function sendOtpEmail(email, otp) {
             {
                     // Generate JWT token
                 const payload = { phone };
-                const token = jwt.sign(payload,JWT_SECRET, { expiresIn: '12h' });
+                const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
                 res.send({success: true ,
                     user: {
                         email: otpdocument.email,
