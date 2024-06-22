@@ -43,22 +43,11 @@ const ParticipantController = {
 
             await newParticipant.save();
             res.status(200).json({ message: 'Participation successful', participant: newParticipant });
-            // res.status(201).json(newParticipant);
         } catch (error) {
             console.error('Error creating participant:', error);
             res.status(500).json({ error: 'Server error' });
         }
     },
-
-    // getParticipants: async (req, res) => {
-    //     try {
-    //         const participants = await Participant.find();
-    //         res.status(200).json(participants);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ error: 'Server error' });
-    //     }
-    // },
 
     getParticipants: async (req, res) => {
         try {
@@ -104,19 +93,6 @@ const ParticipantController = {
             res.status(500).json({ error: 'Server error' });
         }
     },
-
-    // getParticipant: async (req, res) => {
-    //     try {
-    //         const participant = await Participant.findById(req.params.id);
-    //         if (!participant) {
-    //             return res.status(404).json({ error: 'Participant not found' });
-    //         }
-    //         res.status(200).json(participant);
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ error: 'Server error' });
-    //     }
-    // },
 
     getParticipantByBabyCode: async (req, res) => {
         try {
@@ -176,24 +152,6 @@ const ParticipantController = {
             res.status(500).json({ error: 'Server error' });
         }
     },
-    // voteForParticipant: async (req, res) => {
-    //     try {
-    //         const { babyCode } = req.body;
-    //         const participant = await Participant.findOne({ babyCode });
-    //         if (!participant) {
-    //             return res.status(404).json({ error: 'Participant not found' });
-    //         }
-
-    //         // Increment the votes
-    //         participant.votes += 1;
-    //         await participant.save();
-
-    //         res.status(200).json({ message: 'Vote counted successfully', participant });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ error: 'Server error' });
-    //     }
-    // },
 
     voteForParticipant: async (req, res) => {
         try {
@@ -234,24 +192,6 @@ const ParticipantController = {
             // Check if the voter with given voterId exists in the participant's voters array
         const voterIndex = participant.voters.findIndex(v => v.voterId === voterId);
 
-        // if (voterIndex !== -1) {
-        //     // Decrease the votes count
-        //     participant.votes -= 1;
-
-        //     // Remove the voter from the voters array
-        //     participant.voters.splice(voterIndex, 1);
-
-        //     // Save the updated participant
-        //     await participant.save();
-
-        //     // Optionally, update Parent document if needed
-        //     // const parent = await Parent.findByIdAndUpdate(parentId, {
-        //     //     $pull: { voters: { voterId: voterId } }
-        //     // }, { new: true });
-
-        //     // Respond with success message and updated participant data
-        //     res.status(200).json({ message: 'Unvote counted successfully', participant });
-        // }
 
             
         if (voterIndex !== -1) {

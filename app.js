@@ -3,11 +3,14 @@ require('dotenv').config()
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const winnerRoutes = require('./routes/winnerRoutes')
 const participantRoutes = require('./routes/participantRoutes');
 const stateRoutes = require('./routes/stateRoutes');
 const otproutes = require('./routes/otpRoute')
 const districtRoutes = require('./routes/districtRoutes');
+const adminRoutes = require('./routes/adminRoutes')
 const Sequence = require('./models/sequenceModel'); // Ensure this is imported
+const scriptRoutes = require('./routes/scriptRoutes')
 
 //console.log(process.env.MONGO_URL);
 const app = express();
@@ -52,6 +55,9 @@ app.use('/participate', participantRoutes);
 app.use('/state', stateRoutes);
 app.use('/district', districtRoutes);
 app.use('/otp',otproutes)
+app.use('/admin', adminRoutes)
+app.use('/scripts', scriptRoutes)
+app.use('/winners',winnerRoutes)
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
