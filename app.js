@@ -1,5 +1,6 @@
 const express = require('express');
 require('dotenv').config()
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const participantRoutes = require('./routes/participantRoutes');
@@ -11,6 +12,19 @@ const Sequence = require('./models/sequenceModel'); // Ensure this is imported
 //console.log(process.env.MONGO_URL);
 const app = express();
 const port = 3000;
+// Enable All CORS Requests
+app.use(cors());
+
+app.use(cors({
+    origin: '*' // Allow only requests from this origin
+}));
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 
 // Middleware
 app.use(bodyParser.json());
