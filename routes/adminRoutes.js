@@ -6,20 +6,23 @@ const rulesController = require('../controllers/rulesController')
 const homeController = require('../controllers/homeController')
 const adminAuth = require('../middleware/auth');
 const winnerController = require('../controllers/winnerController')
+const participantController = require('../controllers/participantController')
+const districtController = require('../controllers/districtController')
+const stateController = require('../controllers/stateController')
 
 
 router.post('/addadmin', adminController.createAdmin );
 router.post('/adminlogin', adminController.loginAdmin);
-router.get('/dashboard' ,adminController.dashboardforadmin)
+router.get('/dashboard' , adminAuth,adminController.dashboardforadmin)
 
 // routes for terms and conditions
-router.post('/createTermsAndConditions',termsAndConditionsController.createtermsAndConditions);
-router.post('/addTermsAndConditions/:id', termsAndConditionsController.addtermsAndConditionsById);
+router.post('/createTermsAndConditions',adminAuth,termsAndConditionsController.createtermsAndConditions);
+router.post('/addTermsAndConditions/:id',adminAuth, termsAndConditionsController.addtermsAndConditionsById);
 
 
 // routes for rules
-router.post('/createrules',rulesController.createRules );
-router.post('/addrules/:id',rulesController.addRuleById);
+router.post('/createrules',adminAuth,rulesController.createRules );
+router.post('/addrules/:id',adminAuth,rulesController.addRuleById);
 
 
 // for home 
@@ -27,7 +30,16 @@ router.post('/createHome',adminAuth ,homeController.createHome);
 router.post('/addHome/:id',adminAuth ,homeController.addHomeById);
 
 // add winner
-router.post('/addwinner', winnerController.addWinner)
+router.post('/addwinner',adminAuth, winnerController.addWinner)
+
+//add district
+router.post('/adddistrict',adminAuth, districtController.createDistrict);
+
+//add state
+router.post('/addstate',adminAuth, stateController.createState);
+
+//delete participant
+router.delete('/deleteparticipate/:id',adminAuth,  participantController.deleteParticipant);
 
 // router.put('/updateparticipate/:id', ParticipantController.uploadImage, ParticipantController.updateParticipant);
 // router.delete('/deleteparticipate/:id', ParticipantController.deleteParticipant);

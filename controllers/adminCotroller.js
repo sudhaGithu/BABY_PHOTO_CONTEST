@@ -27,7 +27,7 @@ const createAdmin = async (req, res) => {
     res.status(201).json(admin);
   } catch (err) {
     console.error('Error creating admin:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send('unable to add admin');
   }
 };
 
@@ -36,7 +36,11 @@ const loginAdmin = async (req, res) => {
   const user = await Admin.findOne({ email })
 
      // Generate JWT token
-     const payload = { email };
+     const payload = { user: {
+      id: user.id,
+      email: user.email
+      // Add any other fields you want to include in the token
+    } };
      const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
   if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
@@ -86,7 +90,7 @@ const dashboardforadmin = async (req, res) => {
           voters: voterCount,
       });
   } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: 'unable to get records' });
   }
 };
 

@@ -18,7 +18,7 @@ const addWinner = async (req, res) => {
       res.status(201).json(admin);
     } catch (err) {
       console.error('Error creating admin:', err);
-      res.status(500).send('Server Error');
+      res.status(500).send('unable to add winner');
     }
   };
 
@@ -29,7 +29,7 @@ const addWinner = async (req, res) => {
         res.status(200).json(winners);
     } catch (error) {
         console.error('Error fetching winners:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'uable to fetch winners records' });
     }
 };
 

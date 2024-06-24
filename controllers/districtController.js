@@ -8,7 +8,7 @@ const createDistrict = async (req, res) => {
     res.status(201).json(newDistrict);
   } catch (err) {
     console.error('Error creating district:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send('unable to add district');
   }
 };
 
@@ -18,7 +18,7 @@ const getAllDistricts = async (req, res) => {
     res.status(200).json(districts);
   } catch (err) {
     console.error('Error retrieving districts:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send('unable to get records');
   }
 };
 

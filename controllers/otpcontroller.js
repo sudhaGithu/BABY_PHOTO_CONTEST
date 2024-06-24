@@ -123,7 +123,7 @@ async function sendOtpEmail(email, otp) {
                 });
             }
             else{
-                res.status(200).send({success: false, error: "Invalid 3456u otp"})
+                res.status(200).send({success: false, error: "Invalid otp"})
             }
         
 

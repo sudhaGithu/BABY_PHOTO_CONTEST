@@ -99,7 +99,7 @@ const ParticipantController = {
             
         } catch (error) {
             console.error('Error fetching participants:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to get records' });
         }
     },
 
@@ -116,7 +116,7 @@ const ParticipantController = {
             res.status(200).json(participant);
         } catch (error) {
             console.error('Error fetching participant:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to get records' });
         }
     },
 
@@ -145,7 +145,7 @@ const ParticipantController = {
             res.status(200).json({ message: 'Participant updated successfully', participant });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to update participant' });
         }
     },
 
@@ -158,7 +158,7 @@ const ParticipantController = {
             res.status(200).json({ message: 'Participant deleted successfully' });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to delete participant' });
         }
     },
 
@@ -186,7 +186,7 @@ const ParticipantController = {
             res.status(200).json({ message: 'Vote counted successfully', participant });
         } catch (error) {
             console.error('Error voting:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to vote for participant' });
         }
     },
 
@@ -221,7 +221,7 @@ const ParticipantController = {
 
         } catch (error) {
             console.error('Error unvoting:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to unvote for participant' });
         }
     },
     getVotesForParticipant: async (req, res) => {
@@ -236,7 +236,7 @@ const ParticipantController = {
             res.status(200).json({message: 'votes', votes: participant.votes });
         } catch (error) {
             console.error('Error fetching votes:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'unable to get records' });
         }
     },
 };

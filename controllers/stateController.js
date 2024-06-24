@@ -8,7 +8,7 @@ const createState = async (req, res) => {
     res.status(201).json(newState);
   } catch (err) {
     console.error('Error creating state:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send('unable to add state');
   }
 };
 
@@ -18,7 +18,7 @@ const getAllStates = async (req, res) => {
     res.status(200).json(states);
   } catch (err) {
     console.error('Error retrieving states:', err);
-    res.status(500).send('Server Error');
+    res.status(500).send('unable to get records');
   }
 };
 

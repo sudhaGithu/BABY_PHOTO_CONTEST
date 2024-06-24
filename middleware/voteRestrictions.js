@@ -32,7 +32,7 @@ const voteRestrictions = async (req, res, next) => {
         next();
     } catch (error) {
         console.error('Error in vote restrictions middleware:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ message: 'Unable to vote' });
     }
 };
 
