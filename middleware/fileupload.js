@@ -7,7 +7,8 @@ var storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         let ext = path.extname(file.originalname);
-        cb(null, Date.now() + ext);
+        return cb(null,`${file.filename}_${Date.now()+ext}`);
+        // Date.now() + ext
     }
 });
 
@@ -16,11 +17,12 @@ var upload = multer({
     fileFilter: function (req, file, callback) {
         if (
             file.mimetype == "image/png" ||
-            file.mimetype == "image/jpeg"
+            file.mimetype == "image/jpeg" ||
+            file.mimetype == "image/jpg"
         ) {
             callback(null, true);
         } else {
-            console.log('only jpg & png supported');
+            console.log('only jpg,jpeg & png supported');
             callback(null, false);
         }
     },

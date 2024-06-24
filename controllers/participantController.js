@@ -2,13 +2,18 @@ const Participant = require('../models/participantModel');
 const upload = require('../middleware/fileupload');  
 const Sequence = require('../models/sequenceModel');
 const moment = require('moment');
+require('dotenv').config();
 
 const ParticipantController = {
     uploadImage: upload.single('babyImage'),
     participate: async (req, res) => {
         try {
+            
             const { name, babyAge, email, phone, state, district } = req.body;
-
+            if(!req.file.filename)
+                {
+                    res.status(200).json({message:"file is mandatory"})
+                }
             // Validate age
             if (babyAge > 5) {
                 return res.status(400).json({ message: 'Only children 5 years old or younger can participate' });
@@ -26,7 +31,10 @@ const ParticipantController = {
 
             // Generate the baby code
             const babyCode = `BABY${sequence.value}`;
+            console.log("sudha");
+            console.log((process.env.BASE_URL));
 
+            const profile_url = `${process.env.BASE_URL}/uploads/${req.file.filename}`
             // Create a new participant
             const newParticipant = new Participant({
                 name: req.body.name,
@@ -35,17 +43,18 @@ const ParticipantController = {
                 phone: req.body.phone,
                 state: req.body.state,
                 district: req.body.district,
-                babyImage: req.file.filename,
+                babyImage: profile_url,
                 babyCode: babyCode,
                 votes: 0 ,// Initialize votes to 0
                 voters: []
             });
+            console.log("participant saved");
 
             await newParticipant.save();
             res.status(200).json({ message: 'Participation successful', participant: newParticipant });
         } catch (error) {
             console.error('Error creating participant:', error);
-            res.status(500).json({ error: 'Server error' });
+            res.status(500).json({ error: 'please fill all fields' });
         }
     },
 

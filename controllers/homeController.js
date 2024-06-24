@@ -16,7 +16,15 @@ const createHome = async (req, res) => {
 const getAllHome = async (req, res) => {
     try {
         const allHome = await homeModel.find();
-        res.status(200).json(allHome);
+        if(allHome.length === 0)
+            {
+                res.status(200).json({message:"there is no data in Home to show"});
+                
+            }
+            else{
+                res.status(200).json(allHome);
+            }
+        
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

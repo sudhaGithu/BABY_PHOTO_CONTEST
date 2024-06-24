@@ -114,7 +114,7 @@ async function sendOtpEmail(email, otp) {
                     // Generate JWT token
                 const payload = { phone };
                 const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
-                res.send({success: true ,
+                res.status(200).send({success: true ,
                     user: {
                         email: otpdocument.email,
                         voterId: otpdocument.voterId
@@ -123,7 +123,7 @@ async function sendOtpEmail(email, otp) {
                 });
             }
             else{
-                res.status(401).send({success: false, error: "Invalid otp"})
+                res.status(200).send({success: false, error: "Invalid 3456u otp"})
             }
         
 

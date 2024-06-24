@@ -1,5 +1,5 @@
 const otpController=require('../controllers/otpcontroller')
-require('dotenv').config();
+// require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 

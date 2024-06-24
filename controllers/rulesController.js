@@ -15,7 +15,16 @@ const createRules = async (req, res) => {
 const getAllRules = async (req, res) => {
     try {
         const allRules = await rulesModel.find();
-        res.status(200).json(allRules);
+        //res.status(200).json(allRules);
+
+        if(allRules.length === 0)
+            {
+                res.status(200).json({message:"there is no data in Rules to show"});
+                
+            }
+            else{
+                res.status(200).json(allRules);
+            }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

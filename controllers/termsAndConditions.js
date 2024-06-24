@@ -16,7 +16,15 @@ const createtermsAndConditions = async (req, res) => {
 const gettermsAndConditions = async (req, res) => {
     try {
         const allTerms = await termsAndConditionsModel.find();
-        res.status(200).json(allTerms);
+        //res.status(200).json(allTerms);
+        if(allTerms.length === 0)
+            {
+                res.status(200).json({message:"there is no data in Terms and Conditions to show"});
+                
+            }
+            else{
+                res.status(200).json(allTerms);
+            }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -90,5 +98,4 @@ module.exports ={
     createtermsAndConditions,
     gettermsAndConditions,
     addtermsAndConditionsById,
-
 };
