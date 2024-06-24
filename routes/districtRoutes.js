@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const districtController = require('../controllers/districtController');
+const authUser = require('../middleware/authenticateToken')
 
-router.post('/adddistrict', districtController.createDistrict);
-router.get('/districts', districtController.getAllDistricts);
+router.get('/districts', authUser, districtController.getAllDistricts);
 
 module.exports = router;
