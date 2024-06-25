@@ -46,7 +46,8 @@ const ParticipantController = {
                 babyImage: profile_url,
                 babyCode: babyCode,
                 votes: 0 ,// Initialize votes to 0
-                voters: []
+                voters: [],
+                createdAt:Date.now()
             });
             console.log("participant saved");
 
@@ -232,6 +233,75 @@ const ParticipantController = {
             res.status(500).json({ error: 'unable to get records' });
         }
     },
+
+ getWeeklyParticipants : async (req, res) => {
+
+    try {
+        const currentMoment = moment();
+        const currentYear = currentMoment.year();
+        const currentWeek = currentMoment.isoWeek();
+        
+        const weeksData = [];
+
+        let weekCount = 0; // Initialize week count
+        let prevMonth = null;
+
+        // Iterate over each week from the beginning of the year to the current week
+        for (let week = 1; week <= currentWeek; week++) {
+            // Calculate start and end dates for each week
+            const startDate = moment().isoWeek(week).startOf('isoWeek');
+            const endDate = moment().isoWeek(week).endOf('isoWeek');
+
+            // Check if month has changed
+            const currentMonth = startDate.month();
+            if (currentMonth !== prevMonth) {
+                weekCount = 1; // Reset week count for new month
+                prevMonth = currentMonth;
+            } else {
+                weekCount++; // Increment week count within the same month
+            }
+
+            // Construct query to find participants created between startDate and endDate
+            const query = {
+                createdAt: {
+                    $gte: startDate.toDate(),
+                    $lte: endDate.toDate()
+                }
+            };
+
+            // Perform MongoDB query to count participants
+            const count = await Participant.countDocuments(query);
+
+            // Prepare week label
+            const weekLabel = `${startDate.format('MMM')} ${weekCount}${getOrdinal(weekCount)} week`;
+
+            // Prepare weekly data entry
+            weeksData.push({
+                week: weekLabel,
+                startDate: startDate.format('YYYY-MM-DD'),
+                endDate: endDate.format('YYYY-MM-DD'),
+                count: count
+            });
+        }
+
+        res.status(200).json(weeksData);
+    } catch (error) {
+        console.error('Error fetching weekly participants:', error);
+        res.status(500).json({ error: 'Unable to fetch weekly participants' });
+    }
+}
+
+
+
+
 };
+
+// Function to get ordinal number (e.g., 1st, 2nd, 3rd)
+function getOrdinal(n) {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
+}
+
 
 module.exports = ParticipantController;

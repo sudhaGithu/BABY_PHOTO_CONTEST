@@ -13,7 +13,8 @@ const ParticipantSchema = new mongoose.Schema({
     voters: [{
         voterId: String,
         lastVotedAt: Date
-    }]
+    }],
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Participant = mongoose.model('Participant', ParticipantSchema);

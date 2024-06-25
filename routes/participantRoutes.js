@@ -13,5 +13,6 @@ router.put('/updateparticipate/:id', authUser,  ParticipantController.uploadImag
 router.post('/voteforbaby', authUser,  voteRestrictions, ParticipantController.voteForParticipant);
 router.post('/unvote', authUser,  ParticipantController.unvoteForParticipant);
 router.post('/votesbybabycode', authUser,  ParticipantController.getVotesForParticipant);
+router.get('/getallweekly',authUser, ParticipantController.getWeeklyParticipants)
 
 module.exports = router;
