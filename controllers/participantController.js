@@ -60,46 +60,39 @@ const ParticipantController = {
 
     getParticipants: async (req, res) => {
         try {
-            const { state, district } = req.body;
-    
+            const { state, district, name } = req.body;
             let query = {};
     
             // Check if state filter is provided
             if (state) {
                 query.state = state;
-            }
-            else{
-                res.status(200).json(
-                    {
-                        message:"there is no participants based on given fields"
-                    }
-                )
+            } else {
+                return res.status(400).json({ error: 'State parameter is required' });
             }
     
             // Check if district filter is provided
             if (district) {
                 query.district = district;
-            }else{
-                res.status(200).json(
-                    {
-                        message:"there is no participants based on given fields"
-                    }
-                )
+            } else {
+                return res.status(400).json({ error: 'District parameter is required' });
+            }
+    
+            // Check if name filter is provided (optional)
+            if (name) {
+                query.name = name;
             }
     
             const participants = await Participant.find(query);
-            console.log(participants);
+    
             if (participants.length === 0) {
                 return res.status(404).json({ message: 'Participants not found', participants: undefined });
             }
-            else
-            {
+    
             res.status(200).json(participants);
-            }
-            
+    
         } catch (error) {
             console.error('Error fetching participants:', error);
-            res.status(500).json({ error: 'unable to get records' });
+            res.status(500).json({ error: 'Unable to get records' });
         }
     },
 

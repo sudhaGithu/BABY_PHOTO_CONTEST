@@ -4,8 +4,19 @@ const rulesModel = require('../models/rulesModel'); // Adjust the path as necess
 // POST /api/rules - Create new rules
 const createRules = async (req, res) => {
     try {
-       const createdRules = await rulesModel.create(req.body);
-        res.status(201).json(createdRules);
+        const existingRules = await rulesModel.findOne();
+
+        if (existingRules) {
+            const updatedRules = await rulesModel.findOneAndUpdate(
+                {},
+                req.body,
+                { new: true }
+            );
+            res.status(200).json(updatedRules);
+        } else {
+            const createdRules = await rulesModel.create(req.body);
+            res.status(201).json(createdRules);
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

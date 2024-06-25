@@ -5,8 +5,19 @@ const termsAndConditionsModel = require('../models/termsandconditionsModel'); //
 // POST /api/terms-and-conditions - Create new terms and conditions
 const createtermsAndConditions = async (req, res) => {
     try {
-        const createdTerms = await termsAndConditionsModel.create(req.body);
-        res.status(201).json(createdTerms);
+        const existingTerms = await termsAndConditionsModel.findOne();
+
+        if (existingTerms) {
+            const updatedTerms = await termsAndConditionsModel.findOneAndUpdate(
+                {},
+                req.body,
+                { new: true }
+            );
+            res.status(200).json(updatedTerms);
+        } else {
+            const createdterms = await termsAndConditionsModel.create(req.body);
+            res.status(201).json(createdterms);
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

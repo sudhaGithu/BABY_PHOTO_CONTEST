@@ -5,8 +5,19 @@ const homeModel = require('../models/homeModel'); // Adjust the path as necessar
 // POST /api/home - Create new home content
 const createHome = async (req, res) => {
     try {
-        const createdHome = await homeModel.create(req.body);
-        res.status(201).json(createdHome);
+        const existingHome = await homeModel.findOne();
+
+        if (existingHome) {
+            const updatedhome= await homeModel.findOneAndUpdate(
+                {},
+                req.body,
+                { new: true }
+            );
+            res.status(200).json(updatedhome);
+        } else {
+            const createdHome = await homeModel.create(req.body);
+            res.status(201).json(createdHome);
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

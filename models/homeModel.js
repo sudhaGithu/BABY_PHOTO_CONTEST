@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const homeSchema = new mongoose.Schema({
-    content: [{para: String}],
+    home: [{
+        heading: { type: String, require: true },
+        para: { type: Array }
+    }]
 });
 
 const home = mongoose.model('home', homeSchema);
