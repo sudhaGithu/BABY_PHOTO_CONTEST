@@ -6,6 +6,6 @@ const authUser = require('../middleware/authenticateToken')
 
 router.use(express.json());
 
-router.get('/getallwinners', authUser, winnerController.getAllWinners)
+router.get('/getallwinners', winnerController.getAllWinners)
 
 module.exports = router;

@@ -8,10 +8,10 @@ const authUser = require('../middleware/authenticateToken')
 
 router.use(express.json());
 
-router.get('/viewallrules',authUser, rulesController.getAllRules);
+router.get('/viewallrules', rulesController.getAllRules);
 
-router.get('/viewTermsAndConditions',authUser, termsAndConditionsController.gettermsAndConditions);
+router.get('/viewTermsAndConditions', termsAndConditionsController.gettermsAndConditions);
 
-router.get('/viewallHome',authUser, homeController.getAllHome);
+router.get('/viewallHome', homeController.getAllHome);
 
 module.exports = router;
