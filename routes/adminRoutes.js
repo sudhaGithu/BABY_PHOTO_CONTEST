@@ -17,17 +17,16 @@ router.get('/dashboard' , adminAuth,adminController.dashboardforadmin)
 
 // routes for terms and conditions
 router.post('/createTermsAndConditions',adminAuth,termsAndConditionsController.createtermsAndConditions);
-router.post('/addTermsAndConditions/:id',adminAuth, termsAndConditionsController.addtermsAndConditionsById);
 
 
 // routes for rules
 router.post('/createrules',adminAuth,rulesController.createRules );
-router.post('/addrules/:id',adminAuth,rulesController.addRuleById);
+
 
 
 // for home 
 router.post('/createHome',adminAuth ,homeController.createHome);
-router.post('/addHome/:id',adminAuth ,homeController.addHomeById);
+
 
 // add winner
 router.post('/addwinner',adminAuth, winnerController.addWinner)

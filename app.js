@@ -11,6 +11,7 @@ const districtRoutes = require('./routes/districtRoutes');
 const adminRoutes = require('./routes/adminRoutes')
 const Sequence = require('./models/sequenceModel'); // Ensure this is imported
 const scriptRoutes = require('./routes/scriptRoutes')
+const homeRoutes = require('./routes/homePageRoutes')
 
 //console.log(process.env.MONGO_URL);
 const app = express();
@@ -58,6 +59,7 @@ app.use('/otp',otproutes)
 app.use('/admin', adminRoutes)
 app.use('/scripts', scriptRoutes)
 app.use('/winners',winnerRoutes)
+app.use('/home',homeRoutes)
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

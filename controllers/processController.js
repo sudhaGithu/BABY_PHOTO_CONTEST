@@ -1,21 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const termsAndConditionsModel = require('../models/termsandconditionsModel'); // Adjust the path as necessary
+const processsModel = require('../models/process'); // Adjust the path as necessary
 
 // POST /api/terms-and-conditions - Create new terms and conditions
-const createtermsAndConditions = async (req, res) => {
+const createprocess = async (req, res) => {
     try {
-        const existingTerms = await termsAndConditionsModel.findOne();
+        console.log(req.body);
+        const existingTerms = await processsModel.findOne();
 
         if (existingTerms) {
-            const updatedTerms = await termsAndConditionsModel.findOneAndUpdate(
+            const updatedTerms = await processsModel.findOneAndUpdate(
                 {},
                 req.body,
                 { new: true }
             );
             res.status(200).json(updatedTerms);
         } else {
-            const createdterms = await termsAndConditionsModel.create(req.body);
+            const createdterms = await processsModel.create(req.body);
+            console.log(createdterms);
             res.status(201).json(createdterms);
         }
     } catch (error) {
@@ -24,13 +26,13 @@ const createtermsAndConditions = async (req, res) => {
 };
 
 // GET /api/terms-and-conditions - Get all terms and conditions
-const gettermsAndConditions = async (req, res) => {
+const getprocess = async (req, res) => {
     try {
-        const allTerms = await termsAndConditionsModel.find();
+        const allTerms = await processsModel.find();
         //res.status(200).json(allTerms);
         if(allTerms.length === 0)
             {
-                res.status(200).json({message:"there is no data in Terms and Conditions to show"});
+                res.status(200).json({message:"data not found"});
                 
             }
             else{
@@ -43,6 +45,6 @@ const gettermsAndConditions = async (req, res) => {
 
 
 module.exports ={
-    createtermsAndConditions,
-    gettermsAndConditions
+    createprocess,
+    getprocess
 };
