@@ -2,6 +2,7 @@
 const Admin = require('../models/adminModel');
 const Participant = require('../models/participantModel');
 const Winner = require('../models/winners');
+const logger = require('../middleware/logger')
 const Voter = require('../models/generateOtp');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
@@ -24,14 +25,21 @@ const createAdmin = async (req, res) => {
     });
 
     await admin.save();
+
+
+    // Log admin creation
+    logger.info('Admin created successfully', { adminId: admin._id });
+
     res.status(201).json(admin);
   } catch (err) {
+    logger.error('Error creating admin:', { error: err.message });
     console.error('Error creating admin:', err);
     res.status(500).send('unable to add admin');
   }
 };
 
 const loginAdmin = async (req, res) => {
+  try{
   const { email, password } = req.body
   const user = await Admin.findOne({ email })
 
@@ -41,8 +49,12 @@ const loginAdmin = async (req, res) => {
       email: user.email
       // Add any other fields you want to include in the token
     } };
+
      const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
   if (user && (await bcrypt.compare(password, user.password))) {
+
+    logger.info('Admin logged in successfully', { adminId: user._id });
+
       res.json({
           _id: user.id,
           name: user.name,
@@ -52,29 +64,20 @@ const loginAdmin = async (req, res) => {
       })
 }
 else{
+
+      // Log login attempt with invalid credentials
+      logger.warn('Invalid login attempt', { email: email });
+
   res.json({
     message:"Invalid credentials"
   })
 }
+}catch(error){
+  logger.error('Error logging in admin:', { error: error.message });
+  res.status(500).json({ error: 'Unable to login admin' });
+
 }
-
-// const loginAdmin = async (req, res) => {
-//   try {
-//       const { email, password } = req.body;
-//       const admin = await Admin.findOne({ email });
-//       console.log(admin);
-//       if (!admin || !(await admin.comparePassword(password))) {
-//           return res.status(401).json({ error: 'Invalid login credentials' });
-//       }
-//       console.log("sudha");
-
-//       const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '12h' });
-//       console.log(token);
-//       res.status(200).json({ token });
-//   } catch (error) {
-//       res.status(500).json({ error: 'Server error' });
-//   }
-// };
+}
 
 const dashboardforadmin = async (req, res) => {
   try {
@@ -83,6 +86,14 @@ const dashboardforadmin = async (req, res) => {
       const winnerCount = await Winner.countDocuments();
       const voterCount = await Voter.countDocuments();
 
+          // Log dashboard retrieval
+    logger.info('Dashboard statistics retrieved', {
+      userCount: userCount,
+      participantCount: participantCount,
+      winnerCount: winnerCount,
+      voterCount: voterCount
+    });
+
       res.json ({
           users: userCount,
           participants: participantCount,
@@ -90,6 +101,7 @@ const dashboardforadmin = async (req, res) => {
           voters: voterCount,
       });
   } catch (error) {
+    logger.error('Error fetching dashboard statistics:', { error: error.message });
       res.status(500).json({ error: 'unable to get records' });
   }
 };

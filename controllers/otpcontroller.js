@@ -2,6 +2,7 @@
 const nodemailer = require('nodemailer')
 const otpmodel = require('../models/generateOtp')
 const userSequence = require('../models/userSequenceModel')
+const logger = require('../middleware/logger')
 const otpGenertaor = require('otp-generator');
 //const twilio = require('twilio');
 const jwt = require('jsonwebtoken')
@@ -15,6 +16,9 @@ const generateOtp = async (req, res) => {
     try {
         const { email } = req.body;
 
+            // Log the start of the transaction
+    logger.info(`Generating OTP for email: ${email}`, { ip: req.ip });
+
         // to genrate sequence for user 
         let sequence = await userSequence.findOneAndUpdate(
             { name: 'generateotps' },
@@ -23,6 +27,7 @@ const generateOtp = async (req, res) => {
         );
 
         if (!sequence) {
+            logger.error('Failed to generate voterId: Sequence not found', { ip: req.ip });
             return res.status(500).json({ error: 'Failed to generate voterId' });
         }
 
@@ -47,6 +52,7 @@ const generateOtp = async (req, res) => {
                 { $set: { otp: otp, otpExpiration: new Date(cDate.getTime()) } },
                 { new: true }
             );
+            logger.info('Updated existing OTP document', { email: email, ip: req.ip });
         } else {
             // Generate new OTP document
             const generateotp = new otpmodel({
@@ -56,6 +62,8 @@ const generateOtp = async (req, res) => {
                 otpExpiration: new Date(cDate.getTime())
             });
             await generateotp.save();
+
+            logger.info('Generated new OTP document', { email: email, ip: req.ip });
         }
 
         // Send email with OTP
@@ -67,6 +75,7 @@ const generateOtp = async (req, res) => {
         
         });
     } catch (error) {
+        logger.error('Error generating OTP:', { ip: req.ip, error: error.message });
         console.error('Error generating OTP:', error);
         return res.status(400).json({
             success: false,
@@ -96,8 +105,11 @@ async function sendOtpEmail(email, otp) {
         });
 
         console.log("Message sent: %s", info.messageId);
+
+        logger.info(`Email sent successfully to ${email}`, { messageId: info.messageId });
         return info;
     } catch (error) {
+        logger.error('Error sending email:', { error: error.message });
         console.error('Error sending email:', error);
         throw error;
     }
@@ -114,6 +126,15 @@ async function sendOtpEmail(email, otp) {
                     // Generate JWT token
                 const payload = { phone };
                 const token = jwt.sign(payload,process.env.JWT_SECRET, { expiresIn: '12h' });
+                
+
+            // Log successful OTP verification
+            logger.info('OTP verified successfully', {
+                phone: phone,
+                email: otpdocument.email,
+                voterId: otpdocument.voterId
+            });
+                
                 res.status(200).send({success: true ,
                     user: {
                         email: otpdocument.email,
@@ -123,12 +144,17 @@ async function sendOtpEmail(email, otp) {
                 });
             }
             else{
+
+                // Log invalid OTP attempt
+            logger.warn('Invalid OTP entered', { phone: phone });
                 res.status(200).send({success: false, error: "Invalid otp"})
             }
         
 
 
     } catch (error) {
+
+    logger.error('Error verifying OTP:', { error: error.message });
      return res.status(400).json({
         success: false,
         message: error.message

@@ -5,6 +5,7 @@ const participantsModel = require('../models/participantModel');
 const otpgeneratorModel = require('../models/generateOtp');
 const winnersModel = require('../models/winners');
 const Participant = require('../models/participantModel')
+const logger = require('../middleware/logger')
 const State = require('../models/stateModel');
 const subscriptionModel = require('../models/subscription')
 
@@ -14,13 +15,22 @@ const gethomeCount = async (req, res) => {
         const participantsCount = await participantsModel.countDocuments();
         const otpgeneratorCount = await otpgeneratorModel.countDocuments();
         const winnersCount = await winnersModel.countDocuments();
-
-        res.status(200).json({
+        
+        const counts ={
             participants:participantsCount,
             HappyEntrans: otpgeneratorCount,
             winners:winnersCount
-        });
+        }
+
+        logger.info('Document counts fetched successfully', { counts } );
+        
+        res.status(200).json(
+            counts
+        );
     } catch (error) {
+
+        logger.error('Error fetching document counts:', { error: error.message });
+
         console.error('Error fetching document counts:', error);
         res.status(500).json({ error: 'Unable to fetch document counts' });
     }
@@ -28,11 +38,13 @@ const gethomeCount = async (req, res) => {
 
 const getMostRecentWinner = async (req, res) => {
     try {
-        console.log("sudha");
+        
         const recentWinner = await winnersModel.findOne().sort({ _id: -1 }).limit(1).populate('winner').exec();
+        logger.info('Most recent winner fetched successfully', { recentWinner });
         res.status(200).json(recentWinner)
         return recentWinner;
     } catch (error) {
+        logger.error('Error fetching recent winner:', { error: error.message });
         console.error('Error fetching recent winner:', error);
         res.status(500).json({ error: 'Unable to fetch recent winner' });
         throw error;
@@ -71,9 +83,11 @@ const getParticpantsByState = async (req, res) => {
             console.log(item , item.stateName);
             result[item.stateName] = item.count;
         });
+        logger.info('Participants by state fetched successfully', { participantCounts });
         console.log(result);
         res.status(200).json(result);
     } catch (error) {
+        logger.error('Error fetching participants by state:', { error: error.message });
         console.error('Error fetching participants by state:', error);
         res.status(500).json({ error: 'Unable to fetch participants by state' });
     }
@@ -84,9 +98,11 @@ const createsubscription = async (req, res) => {
     try {
  
             const createdHome = await subscriptionModel.create(req.body);
+            logger.info('Subscription created successfully', { createdSubscription });
             res.status(201).json(createdHome);
         
     } catch (error) {
+        logger.error('Error creating subscription:', { error: error.message });
         res.status(500).json({ error: error.message });
     }
 };

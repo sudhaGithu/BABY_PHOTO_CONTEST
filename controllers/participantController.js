@@ -1,5 +1,6 @@
 const Participant = require('../models/participantModel');
 const upload = require('../middleware/fileupload');  
+const logger = require('../middleware/logger')
 const Sequence = require('../models/sequenceModel');
 const moment = require('moment');
 require('dotenv').config();
@@ -26,6 +27,7 @@ const ParticipantController = {
             );
 
             if (!sequence) {
+                logger.error('Failed to generate baby code: Sequence document not found or update failed');
                 return res.status(500).json({ error: 'Failed to generate baby code' });
             }
 
@@ -52,8 +54,10 @@ const ParticipantController = {
             console.log("participant saved");
 
             await newParticipant.save();
+            logger.info('Participant created successfully:', { participant: newParticipant });
             res.status(200).json({ message: 'Participation successful', participant: newParticipant });
         } catch (error) {
+            logger.error('Error creating participant:', { error: error.message });
             console.error('Error creating participant:', error);
             res.status(500).json({ error: 'please fill all fields' });
         }
@@ -86,12 +90,14 @@ const ParticipantController = {
             const participants = await Participant.find(query);
     
             if (participants.length === 0) {
+                logger.warn('No participants found matching the criteria:', { state, district, name });
                 return res.status(404).json({ message: 'Participants not found', participants: undefined });
             }
-    
+            logger.info('Participants fetched successfully:', { participants });
             res.status(200).json(participants);
     
         } catch (error) {
+            logger.error('Error fetching participants:', { error: error.message });
             console.error('Error fetching participants:', error);
             res.status(500).json({ error: 'Unable to get records' });
         }
@@ -100,15 +106,19 @@ const ParticipantController = {
     getParticipantByBabyCode: async (req, res) => {
         try {
             const { babyCode } = req.body;
+            logger.info('Fetching participant by babyCode:', { babyCode });
             console.log(babyCode);
             const participant = await Participant.findOne({ babyCode });
 
             if (!participant) {
+                logger.warn('Participant not found:', { babyCode });
                 return res.status(404).json({ error: 'Participant not found' });
+                
             }
-
+            logger.info('Participant fetched successfully:', { participant });
             res.status(200).json(participant);
         } catch (error) {
+            logger.error('Error fetching participant:', { error: error.message });
             console.error('Error fetching participant:', error);
             res.status(500).json({ error: 'unable to get records' });
         }
@@ -131,13 +141,17 @@ const ParticipantController = {
                 updateData.babyImage = babyImage;
             }
 
+            logger.info('Updating participant:', { participantId: req.params.id, updateData });
+
             const participant = await Participant.findByIdAndUpdate(req.params.id, updateData, { new: true });
             if (!participant) {
+                logger.warn('Participant not found for update:', { participantId: req.params.id });
                 return res.status(404).json({ error: 'Participant not found' });
             }
-
+            logger.info('Participant updated successfully:', { participant });
             res.status(200).json({ message: 'Participant updated successfully', participant });
         } catch (error) {
+            logger.error('Error updating participant:', { error: error.message });
             console.error(error);
             res.status(500).json({ error: 'unable to update participant' });
         }
@@ -147,10 +161,13 @@ const ParticipantController = {
         try {
             const participant = await Participant.findByIdAndDelete(req.params.id);
             if (!participant) {
+                logger.warn('Participant not found for deletion:', { participantId: req.params.id });
                 return res.status(404).json({ error: 'Participant not found' });
             }
+            logger.info('Participant deleted successfully:', { participantId: req.params.id });
             res.status(200).json({ message: 'Participant deleted successfully' });
         } catch (error) {
+            logger.error('Error deleting participant:', { error: error.message });
             console.error(error);
             res.status(500).json({ error: 'unable to delete participant' });
         }
@@ -162,6 +179,7 @@ const ParticipantController = {
             const participant = await Participant.findOne({ babyCode:babyCode }); // assuming the voter ID is passed in the request body
 
             if (!participant) {
+                logger.warn('Participant not found for voting:', { babyCode, voterId });
                 return res.status(404).json({ error: 'Participant not found' });
             }
 
@@ -176,9 +194,10 @@ const ParticipantController = {
             // Increment the votes
             participant.votes += 1;
             await participant.save();
-
+            logger.info('Vote counted successfully for participant:', { babyCode, voterId });
             res.status(200).json({ message: 'Vote counted successfully', participant });
         } catch (error) {
+            logger.error('Error voting for participant:', { error: error.message });
             console.error('Error voting:', error);
             res.status(500).json({ error: 'unable to vote for participant' });
         }
@@ -189,6 +208,7 @@ const ParticipantController = {
             const { babyCode, voterId } = req.body;
             const participant = await Participant.findOne({ babyCode });
             if (!participant) {
+                logger.warn('Participant not found for unvoting:', { babyCode, voterId });
                 return res.status(404).json({ error: 'Participant not found' });
             }
 
@@ -206,14 +226,17 @@ const ParticipantController = {
 
             // Save the updated participant
             await participant.save();
+            logger.info('Unvote counted successfully for participant:', { babyCode, voterId });
                 res.status(200).json({ message: 'Unvote counted successfully', participant });
             } else {
+                logger.warn('Attempt to unvote without prior vote:', { babyCode, voterId });
                 res.status(400).json({ message: 'you are not voted for this baby to unvote' });
             }
 
 
 
         } catch (error) {
+            logger.error('Error unvoting for participant:', { error: error.message });
             console.error('Error unvoting:', error);
             res.status(500).json({ error: 'unable to unvote for participant' });
         }
@@ -224,11 +247,13 @@ const ParticipantController = {
             const participant = await Participant.findOne({ babyCode });
 
             if (!participant) {
+                logger.error(`Participant not found for babyCode: ${babyCode}`);
                 return res.status(404).json({ error: 'Participant not found' });
             }
-
+            logger.info(`Successfully fetched votes for participant with babyCode: ${babyCode}`);
             res.status(200).json({message: 'votes', votes: participant.votes });
         } catch (error) {
+            logger.error('Error fetching votes:', error);
             console.error('Error fetching votes:', error);
             res.status(500).json({ error: 'unable to get records' });
         }
@@ -283,9 +308,10 @@ const ParticipantController = {
                 count: count
             });
         }
-
+        logger.info('Successfully fetched weekly participants data');
         res.status(200).json(weeksData);
     } catch (error) {
+        logger.error('Error fetching weekly participants:', error);
         console.error('Error fetching weekly participants:', error);
         res.status(500).json({ error: 'Unable to fetch weekly participants' });
     }
