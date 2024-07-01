@@ -97,9 +97,11 @@ const getParticpantsByState = async (req, res) => {
 const createsubscription = async (req, res) => {
     try {
  
-            const createdHome = await subscriptionModel.create(req.body);
+            const createdSubscription = await subscriptionModel.create(req.body);
             logger.info('Subscription created successfully', { createdSubscription });
-            res.status(201).json(createdHome);
+            res.status(201).json({
+                message: "subscription completed",
+                subscriber:createdSubscription});
         
     } catch (error) {
         logger.error('Error creating subscription:', { error: error.message });

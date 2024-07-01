@@ -4,14 +4,7 @@ const otpmodel = require('../models/generateOtp')
 const userSequence = require('../models/userSequenceModel')
 const logger = require('../middleware/logger')
 const otpGenertaor = require('otp-generator');
-//const twilio = require('twilio');
 const jwt = require('jsonwebtoken')
-//console.log(process.env);
-// const accountSid = process.env.TWILIO_ACCOUNT_SID;
-// const authToken = process.env.TWILIO_AUTH_TOKEN;
-// console.log(accountSid , authToken, process.env.TWILIO_PHONE_NUMBER);
-// const twilioClient = new twilio(accountSid, authToken);
-//const JWT_SECRET = "my_secret_key"
 const generateOtp = async (req, res) => {
     try {
         const { email } = req.body;
