@@ -7,3 +7,114 @@
 2024-07-01 16:36:05 [undefined] info: Subscription created successfully
 2024-07-01 16:37:35 [undefined] info: Subscription created successfully
 2024-07-01 17:17:03 [undefined] warn: Invalid OTP entered
+2024-07-02 11:53:26 [undefined] info: Participant created successfully:
+2024-07-02 11:54:27 [undefined] info: Participant created successfully:
+2024-07-02 11:56:32 [::1] info: Generating OTP for email: sudarsanarao207@gmail.com
+2024-07-02 11:56:32 [::1] info: Updated existing OTP document
+2024-07-02 11:56:34 [undefined] info: Email sent successfully to sudarsanarao207@gmail.com
+2024-07-02 11:57:02 [undefined] info: OTP verified successfully
+2024-07-02 11:57:47 [undefined] info: Participant created successfully:
+2024-07-02 11:58:07 [undefined] info: Participant created successfully:
+2024-07-02 13:22:15 [undefined] error: Error creating participant:
+2024-07-02 15:29:47 [undefined] error: Error creating participant:
+2024-07-02 15:33:15 [undefined] error: Error creating participant:
+2024-07-02 15:35:10 [undefined] error: Error creating participant:
+2024-07-02 15:36:25 [undefined] error: Error creating participant:
+2024-07-02 16:02:19 [undefined] error: Error creating participant:
+2024-07-02 16:29:54 [undefined] error: Error creating participant:
+2024-07-02 16:30:30 [undefined] error: Error creating participant:
+2024-07-02 16:32:01 [undefined] error: Error creating participant:
+2024-07-02 16:32:43 [undefined] error: Error creating participant:
+2024-07-02 16:45:07 [undefined] error: Error creating participant:
+2024-07-02 16:47:05 [undefined] error: Error creating participant:
+2024-07-02 16:49:02 [undefined] error: Error creating participant:
+2024-07-02 16:50:06 [undefined] error: Error creating participant:
+2024-07-02 16:53:26 [undefined] error: Error creating participant:
+2024-07-02 16:56:01 [undefined] info: Participant created successfully:
+2024-07-02 17:01:29 [undefined] error: Error creating participant:
+2024-07-02 17:06:50 [undefined] error: Error creating participant:
+2024-07-02 17:20:45 [undefined] error: Error creating participant:
+2024-07-02 17:31:52 [undefined] error: Error creating participant:
+2024-07-02 17:35:26 [undefined] error: Error creating participant:
+2024-07-02 17:36:33 [undefined] error: Error creating participant:
+2024-07-02 17:38:53 [undefined] error: Error creating participant:
+2024-07-02 17:50:49 [undefined] error: Error creating participant:
+2024-07-02 18:04:01 [undefined] error: Error creating participant:
+2024-07-02 18:04:56 [undefined] error: Error creating participant:
+2024-07-02 18:05:52 [undefined] error: Error creating participant:
+2024-07-02 18:08:02 [undefined] info: Participant created successfully:
+2024-07-02 18:09:49 [undefined] error: Error creating participant:
+2024-07-02 18:11:10 [undefined] error: Error creating participant:
+2024-07-02 18:11:46 [undefined] info: Participant created successfully:
+2024-07-02 18:49:26 [undefined] info: Participant created successfully:
+2024-07-02 19:04:30 [undefined] error: Error creating participant:
+2024-07-02 19:10:55 [undefined] error: Error creating participant:
+2024-07-02 19:13:04 [undefined] error: Error creating participant:
+2024-07-02 19:20:17 [undefined] error: Error creating participant:
+2024-07-02 19:22:37 [undefined] error: Error creating participant:
+2024-07-02 19:27:40 [undefined] error: Error creating participant:
+2024-07-03 10:58:47 [::1] info: Generating OTP for email: sudarsanarao207@gmail.com
+2024-07-03 10:58:47 [::1] info: Updated existing OTP document
+2024-07-03 10:58:50 [undefined] info: Email sent successfully to sudarsanarao207@gmail.com
+2024-07-03 10:59:14 [undefined] info: OTP verified successfully
+2024-07-03 11:00:03 [undefined] error: Error creating participant:
+2024-07-03 11:08:40 [undefined] error: Error creating participant:
+2024-07-03 11:17:52 [undefined] error: Error creating participant:
+2024-07-03 11:21:33 [undefined] error: Error creating participant:
+2024-07-03 11:23:12 [undefined] error: Error creating participant:
+2024-07-03 11:23:49 [undefined] info: Participant created successfully:
+2024-07-03 11:25:45 [undefined] info: Participant created successfully:
+2024-07-03 11:40:21 [undefined] error: Error creating participant:
+2024-07-03 11:41:56 [undefined] error: Error creating participant:
+2024-07-03 11:43:35 [undefined] error: Error creating participant:
+2024-07-03 11:45:33 [undefined] error: Error creating participant:
+2024-07-03 11:47:10 [undefined] error: Error creating participant:
+2024-07-03 11:54:37 [undefined] error: Error creating participant:
+2024-07-03 12:03:07 [undefined] info: Participant created successfully:
+2024-07-03 12:06:11 [undefined] error: Error creating participant:
+2024-07-03 12:10:47 [undefined] error: Error creating participant:
+2024-07-03 12:12:23 [undefined] error: Error creating participant:
+2024-07-03 12:13:59 [undefined] error: Error creating participant:
+2024-07-03 12:16:28 [undefined] error: Error creating participant:
+2024-07-03 12:17:36 [undefined] info: Participant created successfully:
+2024-07-03 12:28:42 [undefined] info: Participant created successfully:
+2024-07-03 12:32:29 [undefined] info: Participant created successfully:
+2024-07-03 15:14:16 [undefined] info: Admin logged in successfully
+2024-07-03 15:14:58 [undefined] info: Updated existing home content
+2024-07-03 15:16:17 [undefined] info: Created new home content
+2024-07-03 15:20:26 [undefined] info: Updated existing home content
+2024-07-03 15:20:44 [undefined] info: Created new home content
+2024-07-03 15:20:55 [undefined] info: Updated existing home content
+2024-07-03 15:21:32 [undefined] info: Created new rules:
+2024-07-03 15:21:42 [undefined] info: Updated existing rules:
+2024-07-03 15:21:55 [undefined] info: Created new terms and conditions:
+2024-07-03 15:21:57 [undefined] info: Updated terms and conditions:
+2024-07-03 15:22:19 [undefined] info: Fetched all rules:
+2024-07-03 15:22:28 [undefined] info: Retrieved all home content
+2024-07-03 15:22:36 [undefined] info: Fetched all terms and conditions:
+2024-07-03 15:23:09 [undefined] info: Most recent winner fetched successfully
+2024-07-03 15:24:06 [undefined] info: Participants by state fetched successfully
+2024-07-03 15:24:16 [undefined] error: Error fetching winners:
+2024-07-03 15:24:30 [undefined] info: Successfully fetched weekly participants data
+2024-07-03 15:27:52 [undefined] error: Error fetching winners:
+2024-07-03 15:29:09 [undefined] info: Winners fetched successfully
+2024-07-03 15:29:52 [undefined] error: Error fetching winners:
+2024-07-03 15:31:35 [undefined] error: Error fetching winners:
+2024-07-03 15:33:54 [undefined] error: Error fetching winners:
+2024-07-03 15:36:24 [undefined] error: Error fetching winners:
+2024-07-03 15:36:55 [undefined] error: Error fetching winners:
+2024-07-03 15:37:40 [undefined] error: Error fetching winners:
+2024-07-03 15:39:44 [undefined] error: Error adding winner:
+2024-07-03 15:40:35 [undefined] info: New winner added successfully
+2024-07-03 15:40:48 [undefined] info: New winner added successfully
+2024-07-03 15:40:59 [undefined] error: Error fetching winners:
+2024-07-03 15:42:14 [undefined] info: Winners fetched successfully
+2024-07-03 15:48:01 [undefined] info: Winners fetched successfully
+2024-07-03 15:51:03 [undefined] info: Winners fetched successfully
+2024-07-03 15:57:03 [undefined] info: Winners fetched successfully
+2024-07-03 15:57:09 [undefined] info: Winners fetched successfully
+2024-07-03 15:59:10 [undefined] info: Winners fetched successfully
+2024-07-03 16:06:18 [undefined] info: Winners fetched successfully
+2024-07-03 16:07:32 [undefined] info: Winners fetched successfully
+2024-07-03 16:20:30 [undefined] info: Most recent winner fetched successfully
+2024-07-03 16:20:43 [undefined] info: Document counts fetched successfully

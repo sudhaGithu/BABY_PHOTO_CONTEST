@@ -18,7 +18,7 @@ const createtermsAndConditions = async (req, res) => {
             res.status(200).json(updatedTerms);
         } else {
             const createdterms = await termsAndConditionsModel.create(req.body);
-            logger.info('Created new terms and conditions:', { createdTerms });
+            logger.info('Created new terms and conditions:', { createdterms });
             res.status(201).json(createdterms);
         }
     } catch (error) {

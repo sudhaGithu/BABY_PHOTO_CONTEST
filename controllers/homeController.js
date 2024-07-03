@@ -15,7 +15,7 @@ const createHome = async (req, res) => {
                 { new: true }
             );
 
-            logger.info('Updated existing home content', { updatedHome });
+            logger.info('Updated existing home content', { updatedhome });
 
             res.status(200).json(updatedhome);
         } else {

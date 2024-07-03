@@ -10,10 +10,11 @@ const rulesSchema = new mongoose.Schema({
     // Testimonial_Requirement: [{para: String}],
     // Privacy_Assurance: [{para: String}],
 
-    rules: [{
-        heading: { type: String, require: true },
-        para: { type: Array }
-    }]
+    // rules: [{
+    //     heading: { type: String, require: true },
+    //     para: { type: Array }
+    // }]
+    content:String
 });
 
 const rules = mongoose.model('rules', rulesSchema);

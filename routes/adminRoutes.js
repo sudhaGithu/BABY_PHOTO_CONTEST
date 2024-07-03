@@ -32,7 +32,7 @@ router.post('/createHome',adminAuth ,homeController.createHome);
 router.post('/addwinner',adminAuth, winnerController.addWinner)
 
 //add district
-router.post('/adddistrict',adminAuth, districtController.createDistrict);
+router.post('/adddistrict/:id',adminAuth, districtController.createDistrict);
 
 //add state
 router.post('/addstate',adminAuth, stateController.createState);

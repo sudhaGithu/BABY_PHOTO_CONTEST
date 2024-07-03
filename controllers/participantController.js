@@ -1,23 +1,30 @@
 const Participant = require('../models/participantModel');
-const upload = require('../middleware/fileupload');  
+const {upload , s3} = require('../middleware/fileupload');  
+// const { fromIni } = require('@aws-sdk/credential-provider-ini'); // Import credential provider
+// const { parse } = require('dotenv');
+const crypto =  require('crypto')
+const AWS = require('@aws-sdk/client-s3')
 const logger = require('../middleware/logger')
 const Sequence = require('../models/sequenceModel');
+const {S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
 const moment = require('moment');
 require('dotenv').config();
-
+const randomIamgeName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 const ParticipantController = {
+   
     uploadImage: upload.single('babyImage'),
     participate: async (req, res) => {
         try {
-            
             const { name, babyAge, email, phone, state, district } = req.body;
-            if(!req.file.filename)
+            if(!req.file || !req.file.originalname)
                 {
-                    res.status(200).json({message:"file is mandatory"})
+                 return res.status(200).json({message:"file is mandatory"})
                 }
             // Validate age
             if (babyAge > 5) {
-                return res.status(400).json({ message: 'Only children 5 years old or younger can participate' });
+                return res.status(400).json({ message: 'Only 5 years old or below eligible' });
             }
             // Fetch and increment the sequence value
             let sequence = await Sequence.findOneAndUpdate(
@@ -30,13 +37,24 @@ const ParticipantController = {
                 logger.error('Failed to generate baby code: Sequence document not found or update failed');
                 return res.status(500).json({ error: 'Failed to generate baby code' });
             }
+            //const profile_url = `${process.env.BASE_URL}/uploads/${req.file.filename}`
+            const imagename = randomIamgeName()
+            const bucketName =process.env.BUCKET_NAME
+            const params = {
+                Bucket : bucketName,
+                Key :imagename ,
+                Body : req.file.buffer,
+                ContentType : req.file.mimetype,
+            }
 
+            const command = new PutObjectCommand(params)
+            await s3.send(command)
             // Generate the baby code
             const babyCode = `BABY${sequence.value}`;
-            console.log("sudha");
-            console.log((process.env.BASE_URL));
-
-            const profile_url = `${process.env.BASE_URL}/uploads/${req.file.filename}`
+            //console.log((process.env.BASE_URL));
+            var getObjectParams = { Bucket: bucketName, Key: imagename}
+           const url = await getSignedUrl( s3 ,new GetObjectCommand(getObjectParams) )   
+            //const profile_url = `${process.env.BASE_URL}/uploads/${req.file.filename}`
             // Create a new participant
             const newParticipant = new Participant({
                 name: req.body.name,
@@ -45,7 +63,7 @@ const ParticipantController = {
                 phone: req.body.phone,
                 state: req.body.state,
                 district: req.body.district,
-                babyImage: profile_url,
+                babyImage: url,
                 babyCode: babyCode,
                 votes: 0 ,// Initialize votes to 0
                 voters: [],
@@ -59,7 +77,7 @@ const ParticipantController = {
         } catch (error) {
             logger.error('Error creating participant:', { error: error.message });
             console.error('Error creating participant:', error);
-            res.status(500).json({ error: 'please fill all fields' });
+            res.status(500).json({error:error.message})
         }
     },
 
@@ -72,14 +90,14 @@ const ParticipantController = {
             if (state) {
                 query.state = state;
             } else {
-                return res.status(400).json({ error: 'State parameter is required' });
+                return res.status(400).json({ error: 'State is required' });
             }
     
             // Check if district filter is provided
             if (district) {
                 query.district = district;
             } else {
-                return res.status(400).json({ error: 'District parameter is required' });
+                return res.status(400).json({ error: 'District is required' });
             }
     
             // Check if name filter is provided (optional)
@@ -127,7 +145,22 @@ const ParticipantController = {
     updateParticipant: async (req, res) => {
         try {
             const { name, babyAge, email, phoneNumber, state, district } = req.body;
-            const babyImage = req.file ? req.file.path : undefined;
+            const Image = req.file ? req.file.path : undefined;
+            const imagename = randomIamgeName()
+            const bucketName =process.env.BUCKET_NAME
+            const params = {
+                Bucket : bucketName,
+                Key :imagename ,
+                Body : req.file.buffer,
+                ContentType : req.file.mimetype,
+            }
+
+            const command = new PutObjectCommand(params)
+            await s3.send(command)
+            // Generate the baby code
+            //console.log((process.env.BASE_URL));
+            var getObjectParams = { Bucket: bucketName, Key: imagename}
+           const url = await getSignedUrl( s3 ,new GetObjectCommand(getObjectParams) )   
 
             const updateData = {
                 name,
@@ -137,8 +170,8 @@ const ParticipantController = {
                 state,
                 district,
             };
-            if (babyImage) {
-                updateData.babyImage = babyImage;
+            if (Image) {
+                updateData.babyImage = url;
             }
 
             logger.info('Updating participant:', { participantId: req.params.id, updateData });
@@ -159,7 +192,7 @@ const ParticipantController = {
 
     deleteParticipant: async (req, res) => {
         try {
-            const participant = await Participant.findByIdAndDelete(req.params.id);
+            const participant = await Participant.findByIdAndDelete(req.params.id);s
             if (!participant) {
                 logger.warn('Participant not found for deletion:', { participantId: req.params.id });
                 return res.status(404).json({ error: 'Participant not found' });
